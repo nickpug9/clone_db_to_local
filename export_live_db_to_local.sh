@@ -22,12 +22,13 @@ error_exit() {
 # CREATE BACKUP FILE LOCATION
 log "Creating tmp folder..."
 mkdir -p "$TMP_BUCKET" || error_exit "Failed to create temp directory."
-DUMP_FILE="$TMP_BUCKET/live_dump.sql"
+DUMP_FILE="$TMP_BUCKET/$DUMP_FILE_NAME"
 
 # Export DB to tmp folder
 log "Exporting live DB to $DUMP_FILE..."
-ssh "$LIVE_SSH_USER" "mysqldump -u $LIVE_DB_USER -p$LIVE_DB_PASS $LIVE_DB_NAME" > "$DUMP_FILE" || error_exit "Failed to export database."
-
+log "$LIVE_DB_HOST"
+log "$LIVE_SSH_USER"
+ssh $LIVE_SSH_USER "mysqldump --opt --user='$LIVE_DB_USER' -p'$LIVE_DB_PASS' --host='$LIVE_DB_HOST' --no-tablespaces '$LIVE_DB_NAME'" > "$DUMP_FILE" || error_exit "Failed to export database."
 
 # Check if dump file exists and is not empty
 if [ ! -s "$DUMP_FILE" ]; then
