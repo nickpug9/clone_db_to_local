@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # LOAD ENV VARS
-ENV_FILE=".env"
+ENV_FILE="$SCRIPT_DIR/.env"
 if [ -f "$ENV_FILE" ]; then
   export $(grep -v '^#' "$ENV_FILE" | xargs) # Filter out comments and load variables into current shell session
 else
@@ -11,7 +11,7 @@ fi
 
 # FUNCTIONS
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$SCRIPT_DIR/$LOG_FILE"
 }
 
 error_exit() {
@@ -20,7 +20,7 @@ error_exit() {
 }
 
 # Define dump file path
-LIVE_DUMP_FILE="$TMP_BUCKET/live_dump.sql"
+LIVE_DUMP_FILE="$SCRIPT_DIR/$TMP_BUCKET/live_dump.sql"
 
 # Check if file exists
 if [ ! -s "$LIVE_DUMP_FILE" ]; then

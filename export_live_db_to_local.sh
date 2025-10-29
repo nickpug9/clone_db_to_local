@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # LOAD ENV VARS
-ENV_FILE=".env"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+ENV_FILE="$SCRIPT_DIR/.env"
 if [ -f "$ENV_FILE" ]; then
   export $(grep -v '^#' "$ENV_FILE" | xargs) # Filter out comments and load variables into current shell session
 else
@@ -11,7 +13,7 @@ fi
 
 # FUNCTIONS
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$SCRIPT_DIR/$LOG_FILE"
 }
 
 error_exit() {
@@ -21,8 +23,8 @@ error_exit() {
 
 # CREATE BACKUP FILE LOCATION
 log "Creating tmp folder..."
-mkdir -p "$TMP_BUCKET" || error_exit "Failed to create temp directory."
-DUMP_FILE="$TMP_BUCKET/$DUMP_FILE_NAME"
+mkdir -p "$SCRIPT_DIR/$TMP_BUCKET" || error_exit "Failed to create temp directory."
+DUMP_FILE="$SCRIPT_DIR/$TMP_BUCKET/$DUMP_FILE_NAME"
 
 # Export DB to tmp folder
 log "Exporting live DB to $DUMP_FILE..."
